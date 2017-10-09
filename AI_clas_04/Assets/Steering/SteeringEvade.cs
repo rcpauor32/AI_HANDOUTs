@@ -5,6 +5,8 @@ using System.Collections;
 public class SteeringEvade : MonoBehaviour {
     public float max_prediction;
 
+    public float distance = 40;
+
     Move move;
     SteeringArrive arrive;
 
@@ -26,8 +28,11 @@ public class SteeringEvade : MonoBehaviour {
     {
         
         Vector3 prediction = target + velocity * max_prediction;
-        
-        arrive.Steer(-prediction);
+        Vector3 pred_dir = transform.position - prediction;
+
+        Vector3 evade_point = transform.position + pred_dir;
+
+        arrive.Steer(evade_point);
     }
 
 

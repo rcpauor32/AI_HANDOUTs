@@ -55,6 +55,7 @@
      <Compile Include="Assets\MoveToMouseClick.cs" />
      <Compile Include="Assets\Steering\SteeringAlign.cs" />
      <Compile Include="Assets\Steering\SteeringArrive.cs" />
+     <Compile Include="Assets\Steering\SteeringEvade.cs" />
      <Compile Include="Assets\Steering\SteeringFlee.cs" />
      <Compile Include="Assets\Steering\SteeringPursue.cs" />
      <Compile Include="Assets\Steering\SteeringSeek.cs" />
