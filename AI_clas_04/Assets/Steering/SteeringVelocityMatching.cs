@@ -19,8 +19,12 @@ public class SteeringVelocityMatching : MonoBehaviour {
 	{
 		if(target_move)
 		{
-			// TODO 5: First come up with your ideal velocity
-			// then accelerate to it.
+            // TODO 5: First come up with your ideal velocity
+            // then accelerate to it. 
+            Vector3 dir = target_move.transform.position - this.transform.position;
+            dir.Normalize();
+            move.max_mov_velocity = target_move.max_mov_velocity;
+            move.AccelerateMovement(dir * move.max_mov_velocity);
 
 		}
 	}
