@@ -22,10 +22,17 @@ public class SteeringPursue : MonoBehaviour {
 
 	public void Steer(Vector3 target, Vector3 velocity)
 	{
-        // TODO 6: Create a fake position to represent
-        // enemies predicted movement. Then call Steer()
-        // on our Steering Arrive
-        Vector3 prediction = target + velocity * max_prediction;
-        arrive.Steer(prediction);
+		Vector3 diff = target - transform.position;
+		float distance = diff.magnitude;
+		float my_speed = move.movement.magnitude;
+		float prediction;
+
+		// is the speed too small ?
+		if(my_speed < distance / max_prediction)
+			prediction = max_prediction;
+		else
+			prediction = distance / my_speed;
+
+		arrive.Steer(target + (velocity * prediction));
 	}
 }

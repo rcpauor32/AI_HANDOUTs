@@ -35,7 +35,6 @@ public class Move : MonoBehaviour {
 	public void AccelerateRotation (float rotation_acceleration) 
 	{
 		rotation += rotation_acceleration;
-        rotation = Mathf.Clamp(rotation, 0, max_rot_velocity);
 	}
 
 	

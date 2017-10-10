@@ -8,6 +8,7 @@ public class SteeringEvade : MonoBehaviour {
     public float distance = 40;
 
     Move move;
+    SteeringSeek seek;
     SteeringArrive arrive;
 
     // Use this for initialization
@@ -15,6 +16,7 @@ public class SteeringEvade : MonoBehaviour {
 
         move = GetComponent<Move>();
         arrive = GetComponent<SteeringArrive>();
+        seek = GetComponent<SteeringSeek>();
     }
 	
 	// Update is called once per frame
@@ -26,13 +28,15 @@ public class SteeringEvade : MonoBehaviour {
 
     public void Steer(Vector3 target, Vector3 velocity)
     {
+
+        if (Vector3.Distance(transform.position, target) < distance)
+        {
+            Vector3 prediction = target + velocity * max_prediction;
+            Vector3 inverse_dir = transform.position - prediction;
+            move.AccelerateMovement(inverse_dir.normalized * move.max_mov_acceleration);
+        }
         
-        Vector3 prediction = target + velocity * max_prediction;
-        Vector3 pred_dir = transform.position - prediction;
 
-        Vector3 evade_point = transform.position + pred_dir;
-
-        arrive.Steer(evade_point);
     }
 
 

@@ -9,7 +9,6 @@ public class SteeringArrive : MonoBehaviour {
 
 	Move move;
 
-
 	// Use this for initialization
 	void Start () { 
 		move = GetComponent<Move>();
@@ -21,31 +20,39 @@ public class SteeringArrive : MonoBehaviour {
 		Steer(move.target.transform.position);
 	}
 
-    public void Steer(Vector3 target)
-    {
-        if (!move)
-            move = GetComponent<Move>();
+	public void Steer(Vector3 target)
+	{
+		if(!move)
+			move = GetComponent<Move>();
 
-        // TODO 3: Create a vector to calculate our ideal velocity
-        // then calculate the acceleration needed to match that velocity
-        // before sending it to move.AccelerateMovement() clamp it to 
-        // move.max_mov_acceleration
-        if (Vector3.Distance(this.transform.position, target) < slow_distance)
-        {
-            float dist = Vector3.Distance(this.transform.position, target);
-            float slow_v = dist / slow_distance;
-            Vector3 A = this.transform.position;
-            Vector3 B = target;
+		// Velocity we are trying to match
+		float ideal_velocity = 0.0f;
+		Vector3 diff = target - transform.position;
 
-            Vector3 dir_v = B - A;
-            dir_v.Normalize();
-            move.AccelerateMovement(dir_v * move.max_mov_velocity);
-            move.movement *= slow_v;
-        }
-        if (Vector3.Distance(this.transform.position, target) < min_distance)
-        {
-            move.movement = Vector3.zero;
-        }
+		if(diff.magnitude < min_distance)
+			move.SetMovementVelocity(Vector3.zero);
+
+		// Decide wich would be our ideal velocity
+		if(diff.magnitude > slow_distance)
+			ideal_velocity = move.max_mov_velocity;
+		else
+			ideal_velocity = move.max_mov_velocity * diff.magnitude / slow_distance;
+
+		// Create a vector that describes the ideal velocity
+		Vector3 ideal_movement = diff.normalized * ideal_velocity;
+
+		// Calculate acceleration needed to match that velocity
+		Vector3 acceleration = ideal_movement - move.movement;
+		acceleration /= time_to_target;
+
+		// Cap acceleration
+		if(acceleration.magnitude > move.max_mov_acceleration)
+		{
+			acceleration.Normalize();
+			acceleration *= move.max_mov_acceleration;
+		}
+
+		move.AccelerateMovement(acceleration);
 	}
 
 	void OnDrawGizmosSelected() 

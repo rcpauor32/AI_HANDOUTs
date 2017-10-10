@@ -17,28 +17,31 @@ public class SteeringAlign : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-        // TODO 4: As with arrive, we first construct our ideal rotation
-        // then accelerate to it. Use Mathf.DeltaAngle() to wrap around PI
-        // Is the same as arrive but with angular velocities
-        Vector3 target_dir = move.target.transform.position - this.transform.position;
-        Vector3 object_dir = this.transform.forward;
+		// Orientation we are trying to match
+		float my_orientation = Mathf.Rad2Deg * Mathf.Atan2(transform.forward.x, transform.forward.z);
+		float target_orientation = Mathf.Rad2Deg * Mathf.Atan2(move.target.transform.forward.x, move.target.transform.forward.z);
+		float diff = Mathf.DeltaAngle(my_orientation, target_orientation); // wrap around PI
 
-        float angle_a = Mathf.Rad2Deg * Mathf.Atan2(target_dir.z, target_dir.x);
-        float angle_b = Mathf.Rad2Deg * Mathf.Atan2(object_dir.z, object_dir.x);
+		float diff_absolute = Mathf.Abs(diff);
 
-        float dangle = Mathf.DeltaAngle(angle_a, angle_b);
+		if(diff_absolute < min_angle)
+		{
+			move.SetRotationVelocity(0.0f);
+			return;
+		}
 
-        if(Mathf.Abs(dangle) > min_angle)
-        {
-            float percentatge = 1;
+		float ideal_rotation = 0.0f;
 
-            if(Mathf.Abs(dangle) < slow_angle)
-            {
-                percentatge = dangle / slow_angle;
-            }
+		if(diff_absolute > slow_angle)
+			ideal_rotation = move.max_rot_velocity;
+		else
+			ideal_rotation = move.max_rot_velocity * diff_absolute / slow_angle;
 
-            move.AccelerateRotation(percentatge * (move.max_mov_acceleration / Time.deltaTime));
-        }
+		float angular_acceleration = ideal_rotation / time_to_target;
 
-    }
+		if(diff < 0)
+			angular_acceleration = -angular_acceleration;
+
+		move.AccelerateRotation(Mathf.Clamp(angular_acceleration, -move.max_rot_acceleration, move.max_rot_acceleration));
+	}
 }

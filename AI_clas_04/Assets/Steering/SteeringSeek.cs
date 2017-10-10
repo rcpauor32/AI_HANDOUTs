@@ -7,7 +7,7 @@ public class SteeringSeek : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		move = GetComponent<Move>();
+		move = GetComponent<Move>(); 
 	}
 	
 	// Update is called once per frame
@@ -18,15 +18,13 @@ public class SteeringSeek : MonoBehaviour {
 
 	public void Steer(Vector3 target)
 	{
-        // TODO 1: accelerate towards our target at max_acceleration
-        // use move.AccelerateMovement()
-        Vector3 A = this.transform.position;
-        Vector3 B = target;
+		if(!move)
+			move = GetComponent<Move>();
 
-        Vector3 dir_v = B - A;
-        dir_v.Normalize();
+		Vector3 diff = target - transform.position;
+		diff.Normalize ();
+		diff *= move.max_mov_acceleration;
 
-        move.AccelerateMovement(dir_v * move.max_mov_acceleration);
-
+		move.AccelerateMovement(diff);
 	}
 }
